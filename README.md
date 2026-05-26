@@ -17,13 +17,20 @@
 
 ## 설치
 
-### 전역 스킬 (권장)
+### GitHub에서 설치 (권장)
+
+```powershell
+git clone https://github.com/namkibok/harness_v2.git
+Copy-Item -Recurse -Force "harness_v2\skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+```
+
+설치 후 Cursor를 재시작하거나 새 채팅을 열면 `harness` 스킬이 후보에 포함됩니다.
+
+### 저장소를 이미 클론한 경우 (전역 스킬)
 
 ```powershell
 Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
 ```
-
-설치 후 Cursor를 재시작하거나 새 채팅을 열면 `harness` 스킬이 후보에 포함됩니다.
 
 ### 프로젝트에만 두기
 
