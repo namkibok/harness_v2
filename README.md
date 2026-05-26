@@ -86,4 +86,4 @@ Apache 2.0 — 원본 [revfactory/harness](https://github.com/revfactory/harness
 ## 크레딧
 
 팀 아키텍처·워크플로우: **RevFactory / Min Hwang** — [revfactory/harness](https://github.com/revfactory/harness)  
-Cursor 포트: 이 저장소 (`하네스_CURSOR`)
+Cursor 포트: [namkibok/harness_v2](https://github.com/namkibok/harness_v2)
