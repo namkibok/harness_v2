@@ -1,11 +1,7 @@
-# ant-skills catalog (external)
+# ant-skills (external Git catalog)
 
-Skill bodies live in **[namkibok/ant-skills](https://github.com/namkibok/ant-skills)**.
+Skill packages: **[github.com/namkibok/ant-skills](https://github.com/namkibok/ant-skills)**
 
-| Priority | Source |
-|----------|--------|
-| 1 | `HARNESS_SKILL_CATALOG` |
-| 2 | Local: `E:\workspace\skills\antigravity` |
-| 3 | Sparse clone via `scripts/install-skills.ps1` |
+Installed via `scripts/install-skills.ps1` (Git sparse, lock IDs only).
 
-Do not vendor the full catalog inside harness_ant.
+Optional env: `HARNESS_SKILL_REPO`, `HARNESS_SKILL_CACHE` — see [TEAM-WORKFLOW.md](../../docs/TEAM-WORKFLOW.md).

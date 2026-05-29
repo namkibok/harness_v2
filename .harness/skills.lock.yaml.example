@@ -1,8 +1,7 @@
 # Copy to your project as .harness/skills.lock.yaml after Harness Phase 4.
-# Then run: & "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
+# Then: & "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
 #
-# Commit this file + .agent/skills/ (or lock only + run script in CI/onboarding).
-# Catalog: E:\workspace\skills\antigravity (HARNESS_SKILL_CATALOG)
+# Skills fetched from https://github.com/namkibok/ant-skills (Git sparse)
 
 domain: fullstack-web
 updated: 2026-05-29

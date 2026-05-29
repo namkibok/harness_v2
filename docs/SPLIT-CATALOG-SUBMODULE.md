@@ -1,36 +1,26 @@
-# ant-skills — skill catalog repository
+# ant-skills catalog (Git)
 
-Harness does **not** vendor skills inside [harness_ant](https://github.com/namkibok/harness_ant).
+| Repo | URL |
+|------|-----|
+| Harness | [namkibok/harness_ant](https://github.com/namkibok/harness_ant) |
+| Skills | [namkibok/ant-skills](https://github.com/namkibok/ant-skills) |
 
-## Catalog repository
-
-| Item | Value |
-|------|--------|
-| **GitHub** | [github.com/namkibok/ant-skills](https://github.com/namkibok/ant-skills) |
-| **Local clone (team dev)** | `E:\workspace\skills\antigravity` |
-| **Env override** | `HARNESS_SKILL_CATALOG` |
-
-## Install flow
+## Install (all users)
 
 ```powershell
 $env:HARNESS_HOME = "C:\path\to\harness_ant"
-# optional — defaults to E:\workspace\skills\antigravity if present
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
-
 & "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
 ```
 
-Without a local catalog, `install-skills.ps1` sparse-clones **only lock-listed skills** from ant-skills.
+Uses Git sparse checkout — no per-machine `E:\workspace\...` paths.
 
-## Adding or editing skills
+## Maintain skills
 
-1. Edit under `E:\workspace\skills\antigravity\{skill-id}\` (or clone ant-skills)
-2. Commit and push to [ant-skills](https://github.com/namkibok/ant-skills)
-3. Re-run `install-skills.ps1` on target projects
+```powershell
+git clone https://github.com/namkibok/ant-skills.git
+cd ant-skills
+# edit {skill-id}/SKILL.md
+git push origin main
+```
 
-## harness_ant vs ant-skills
-
-| Repo | Role |
-|------|------|
-| [harness_ant](https://github.com/namkibok/harness_ant) | Meta harness, scripts, `catalog-index.yaml` |
-| [ant-skills](https://github.com/namkibok/ant-skills) | ~1,300 skill packages (`{id}/SKILL.md`) |
+Teams pick up changes on next `install-skills.ps1` (cache pulls latest).

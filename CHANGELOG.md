@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0-antigravity] — 2026-05-29
+
+### Changed
+
+- Skill catalog is **Git-only** ([ant-skills](https://github.com/namkibok/ant-skills)); removed `E:\workspace\...` local defaults
+- `HARNESS_SKILL_REPO` / `HARNESS_SKILL_CACHE` replace `HARNESS_SKILL_CATALOG` for optional overrides
+- All users: `install-skills.ps1` sparse clone (requires Git)
+
 ## [2.1.0-antigravity] — 2026-05-29
 
 ### Changed
