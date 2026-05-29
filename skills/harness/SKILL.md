@@ -106,7 +106,7 @@ description: "Antigravity용 하네스(팀 아키텍처) 메타 스킬. .agent/a
 
 #### 4-0. 공유 카탈로그에서 선별 (팀 Git 연동)
 
-**카탈로그 경로** (우선순위): `HARNESS_SKILL_CATALOG` → 기본 `E:\workspace\skills_안티그래비티\antigravity`.  
+**카탈로그 경로** (우선순위): `HARNESS_SKILL_CATALOG` → 로컬 `E:\workspace\skills\antigravity` → sparse [ant-skills](https://github.com/namkibok/ant-skills).  
 절차·정션 링크·금지 사항: `references/skill-catalog.md`. 도메인별 추천 ID: 하네스 루트의 `skills/catalog-index.yaml`.
 
 1. 도메인에 맞는 스킬 ID를 `catalog-index.yaml`과 카탈로그 `Glob`으로 후보화 (보통 3~8개)

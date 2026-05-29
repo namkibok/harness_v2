@@ -2,7 +2,7 @@
 # Then run: & "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
 #
 # Commit this file + .agent/skills/ (or lock only + run script in CI/onboarding).
-# Catalog: E:\workspace\skills_안티그래비티\antigravity (HARNESS_SKILL_CATALOG)
+# Catalog: E:\workspace\skills\antigravity (HARNESS_SKILL_CATALOG)
 
 domain: fullstack-web
 updated: 2026-05-29

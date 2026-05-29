@@ -6,7 +6,7 @@
 git clone https://github.com/namkibok/harness_ant.git
 cd harness_ant
 $env:HARNESS_HOME = (Get-Location).Path
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
 ```
 
 ## 2. 메타 스킬 설치 (설계자, 1회)
@@ -39,4 +39,4 @@ cd your-project
 
 **스킬이 안 붙는다** — lock 실행 여부, `.agent/skills/{name}/SKILL.md` 존재 확인, `HARNESS_SKILL_CATALOG` 경로 확인
 
-**카탈로그 ID 없음** — `E:\workspace\skills_안티그래비티\antigravity\{id}\SKILL.md` 존재 여부 확인
+**카탈로그 ID 없음** — `E:\workspace\skills\antigravity\{id}\SKILL.md` 존재 여부 확인

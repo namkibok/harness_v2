@@ -1,19 +1,14 @@
 <#
 .SYNOPSIS
-  Install only the skills listed in .harness/skills.lock.yaml from the Antigravity skills catalog.
+  Install skills from .harness/skills.lock.yaml via ant-skills catalog (local or GitHub sparse).
 
 .DESCRIPTION
+  Catalog resolution (first match):
+    1. -CatalogPath or HARNESS_SKILL_CATALOG
+    2. Local default: E:\workspace\skills\antigravity
+    3. Sparse clone: https://github.com/namkibok/ant-skills.git
+
   Does NOT copy the full catalog to ~/.gemini/antigravity/skills/.
-  Default catalog: E:\workspace\skills_안티그래비티\antigravity (override with HARNESS_SKILL_CATALOG).
-  Junction (default) or Copy into the project .agent/skills/.
-
-.EXAMPLE
-  # Team developer — project has .harness/skills.lock.yaml
-  .\scripts\install-skills.ps1
-
-.EXAMPLE
-  # Harness designer — ad-hoc skills
-  .\scripts\install-skills.ps1 -Skills typescript-expert,webapp-testing -TargetDir .agent\skills
 #>
 [CmdletBinding()]
 param(
@@ -23,18 +18,15 @@ param(
     [ValidateSet("Junction", "Copy")]
     [string]$Mode = "Junction",
     [string]$CatalogPath = "",
-    [string]$CatalogRepo = "",
-    [string]$CacheDir = "$env:LOCALAPPDATA\harness\antigravity-skills-sparse",
-    [switch]$Refresh
+    [string]$CatalogRepo = "https://github.com/namkibok/ant-skills.git",
+    [string]$CacheDir = "$env:LOCALAPPDATA\harness\ant-skills-sparse",
+    [switch]$Refresh,
+    [switch]$ForceRemote
 )
 
 $ErrorActionPreference = "Stop"
 
-$DefaultCatalog = "E:\workspace\skills_안티그래비티\antigravity"
-if (-not $CatalogPath) {
-    if ($env:HARNESS_SKILL_CATALOG) { $CatalogPath = $env:HARNESS_SKILL_CATALOG }
-    else { $CatalogPath = $DefaultCatalog }
-}
+$DefaultCatalogLocal = "E:\workspace\skills\antigravity"
 
 function Get-SkillsFromLockFile {
     param([string]$Path)
@@ -57,11 +49,20 @@ function Get-SkillsFromLockFile {
     return $list
 }
 
+function Get-CatalogPathCandidates {
+    param([string]$Explicit)
+    $paths = @()
+    if ($Explicit) { $paths += $Explicit }
+    if ($env:HARNESS_SKILL_CATALOG) { $paths += $env:HARNESS_SKILL_CATALOG }
+    $paths += $DefaultCatalogLocal
+    return @($paths | Where-Object { $_ } | Select-Object -Unique)
+}
+
 function Ensure-SparseCatalog {
     param([string[]]$SkillIds, [string]$Dir, [string]$Repo, [switch]$ForceRefresh)
 
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-        throw "git is required for remote catalog sparse fetch. Install Git for Windows or set HARNESS_SKILL_CATALOG to a local folder."
+        throw "git is required for remote catalog sparse fetch. Install Git for Windows or clone ant-skills locally."
     }
 
     $needClone = -not (Test-Path (Join-Path $Dir ".git"))
@@ -70,9 +71,9 @@ function Ensure-SparseCatalog {
             Remove-Item $Dir -Recurse -Force
         }
         New-Item -ItemType Directory -Force -Path $Dir | Out-Null
-        Write-Host "Cloning catalog (sparse): $Repo"
+        Write-Host "Cloning ant-skills (sparse): $Repo"
         git clone --filter=blob:none --sparse $Repo $Dir
-        if ($LASTEXITCODE -ne 0) { throw "git clone failed" }
+        if ($LASTEXITCODE -ne 0) { throw "git clone failed: $Repo" }
     }
 
     Push-Location $Dir
@@ -87,6 +88,28 @@ function Ensure-SparseCatalog {
     finally {
         Pop-Location
     }
+}
+
+function Resolve-CatalogRoot {
+    param(
+        [string[]]$SkillIds,
+        [string]$ExplicitPath,
+        [string]$Repo,
+        [string]$SparseDir,
+        [switch]$ForceRemote,
+        [switch]$ForceRefresh
+    )
+
+    if (-not $ForceRemote) {
+        foreach ($p in (Get-CatalogPathCandidates -Explicit $ExplicitPath)) {
+            if ((Test-Path $p) -and -not (Test-Path (Join-Path $p ".git"))) {
+                return @{ Root = (Resolve-Path $p).Path; Source = "local"; Path = $p }
+            }
+        }
+    }
+
+    Ensure-SparseCatalog -SkillIds $SkillIds -Dir $SparseDir -Repo $Repo -ForceRefresh:$ForceRefresh
+    return @{ Root = $SparseDir; Source = "sparse"; Path = $SparseDir }
 }
 
 function Install-SkillToTarget {
@@ -145,27 +168,14 @@ No skills to install. Provide either:
 
 $skillList = @($skillList | Select-Object -Unique)
 Write-Host "Installing $($skillList.Count) skill(s) -> $TargetDir ($Mode)"
-Write-Host "Catalog: $CatalogPath"
 
-$catalogRoot = $CatalogPath
-if (-not (Test-Path $catalogRoot)) {
-    throw "Catalog path not found: $catalogRoot`nSet HARNESS_SKILL_CATALOG or pass -CatalogPath."
-}
-
-$useLocal = -not (Test-Path (Join-Path $catalogRoot ".git"))
-if ($useLocal) {
-    Write-Host "Using local catalog (no git sparse)."
-}
-else {
-    if (-not $CatalogRepo) {
-        throw "Catalog path is a git repo but -CatalogRepo was not provided. Use a flat local skills folder or pass -CatalogRepo."
-    }
-    Ensure-SparseCatalog -SkillIds $skillList -Dir $CacheDir -Repo $CatalogRepo -ForceRefresh:$Refresh
-    $catalogRoot = $CacheDir
-}
+$resolved = Resolve-CatalogRoot -SkillIds $skillList -ExplicitPath $CatalogPath -Repo $CatalogRepo `
+    -SparseDir $CacheDir -ForceRemote:$ForceRemote -ForceRefresh:$Refresh
+$catalogRoot = $resolved.Root
+Write-Host "Catalog [$($resolved.Source)]: $catalogRoot"
 
 foreach ($id in $skillList) {
     Install-SkillToTarget -SkillId $id -SourceRoot $catalogRoot -DestRoot $TargetDir -InstallMode $Mode
 }
 
-Write-Host "Done. Catalog root: $catalogRoot"
+Write-Host "Done. Catalog: $catalogRoot ($($resolved.Source))"

@@ -7,13 +7,13 @@ Harness는 스킬을 항상 처음부터 쓰지 않는다. **공유 카탈로그
 추가 스킬 카탈로그는 **반드시** 아래 경로를 사용한다:
 
 ```
-E:\workspace\skills_안티그래비티\antigravity
+E:\workspace\skills\antigravity
 ```
 
 환경 변수로 재정의 가능:
 
 ```powershell
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
 ```
 
 ## 팀원은 카탈로그 전체를 받을 필요 없음

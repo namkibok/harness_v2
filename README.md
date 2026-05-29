@@ -2,7 +2,7 @@
 
 [revfactory/harness](https://github.com/revfactory/harness)의 **Google Antigravity** 포트입니다. 도메인 한 줄 → 전문 에이전트 팀 + 스킬을 설계·생성하는 **L3 메타 팩토리(팀 아키텍처)** 역할은 동일하고, 런타임만 Antigravity에 맞게 바뀌었습니다.
 
-**English summary:** Same Harness meta-skill; outputs go to `.agent/agents/` and `.agent/skills/`; orchestration uses parallel delegation + `_workspace/` handoffs; skill catalog lives at `E:\workspace\skills_안티그래비티\antigravity`.
+**English summary:** Same Harness meta-skill; outputs go to `.agent/agents/` and `.agent/skills/`; orchestration uses parallel delegation + `_workspace/` handoffs; skill catalog: [ant-skills](https://github.com/namkibok/ant-skills) (local default `E:\workspace\skills\antigravity`).
 
 **Repository:** [github.com/namkibok/harness_ant](https://github.com/namkibok/harness_ant)
 
@@ -15,7 +15,7 @@
 | 전역 스킬 | — | `~/.cursor/skills/` | `~/.gemini/antigravity/skills/` |
 | 세션 포인터 | `CLAUDE.md` | `AGENTS.md` | **`AGENTS.md`** |
 | 멀티 에이전트 | `TeamCreate`, `SendMessage` | 병렬 `Task` + `_workspace/` | 병렬 위임 + `_workspace/` |
-| 스킬 카탈로그 | — | cursor-skills (GitHub) | **`E:\workspace\skills_안티그래비티\antigravity`** |
+| 스킬 카탈로그 | — | cursor-skills (GitHub) | **[ant-skills](https://github.com/namkibok/ant-skills)** · 로컬 `E:\workspace\skills\antigravity` |
 | 메타 스킬 설치 | `/plugin install` | `~/.cursor/skills/harness` | `~/.gemini/antigravity/skills/harness` |
 
 ## 설치 (팀 · Git)
@@ -34,7 +34,7 @@ git clone https://github.com/namkibok/harness_ant.git
 cd harness_ant
 
 $env:HARNESS_HOME = (Get-Location).Path
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
 ```
 
 ### 일반 개발자 — 필요한 스킬만 설치
@@ -124,7 +124,7 @@ your-project/
     └── quickstart-antigravity.md
 ```
 
-**스킬 카탈로그 (외부):** `E:\workspace\skills_안티그래비티\antigravity` — `HARNESS_SKILL_CATALOG`로 재정의 가능.
+**스킬 카탈로그:** [namkibok/ant-skills](https://github.com/namkibok/ant-skills) — 로컬 `E:\workspace\skills\antigravity` 또는 `HARNESS_SKILL_CATALOG`.
 
 ## 아키텍처 패턴 (동일)
 

@@ -1,11 +1,11 @@
-# External Antigravity skill catalog
+# ant-skills catalog (external)
 
-This harness repo does **not** vendor the skill catalog.
+Skill bodies live in **[namkibok/ant-skills](https://github.com/namkibok/ant-skills)**.
 
-Use the local path (team standard):
+| Priority | Source |
+|----------|--------|
+| 1 | `HARNESS_SKILL_CATALOG` |
+| 2 | Local: `E:\workspace\skills\antigravity` |
+| 3 | Sparse clone via `scripts/install-skills.ps1` |
 
-```
-E:\workspace\skills_안티그래비티\antigravity
-```
-
-Set `HARNESS_SKILL_CATALOG` and run `scripts/install-skills.ps1`.
+Do not vendor the full catalog inside harness_ant.

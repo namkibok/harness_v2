@@ -2,7 +2,7 @@
 
 카탈로그(~1,300 skills) **전체 복사는 필수가 아닙니다.** 역할별로 필요한 것만 받습니다.
 
-**카탈로그 경로:** `E:\workspace\skills_안티그래비티\antigravity` (`HARNESS_SKILL_CATALOG`)
+**카탈로그 경로:** `E:\workspace\skills\antigravity` (`HARNESS_SKILL_CATALOG`)
 
 ## 역할 요약
 
@@ -10,7 +10,7 @@
 |---|-------------|------------|
 | **하는 일** | "하네스 구성해줘", 에이전트/스킬 선별 | 프로젝트 기능 개발 |
 | **clone** | 하네스 repo | **프로젝트 repo만** |
-| **카탈로그** | 로컬 `skills_안티그래비티\antigravity` | **불필요** (lock + install-skills) |
+| **카탈로그** | 로컬 `skills\antigravity` | **불필요** (lock + install-skills) |
 | **전역** | `~/.gemini/antigravity/skills/harness` | 동일 (메타 스킬 1개) |
 
 ## 말만 하면 스킬 설치 (provision-skill)
@@ -33,7 +33,7 @@ cd your-project
 
 git clone https://github.com/namkibok/harness_ant.git
 $env:HARNESS_HOME = "$PWD"  # or path to harness_ant clone
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
 
 & "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
 ```
@@ -50,7 +50,7 @@ Copy-Item -Recurse -Force "$env:HARNESS_HOME\skills\harness" "$agSkills\harness"
 ```powershell
 git clone https://github.com/namkibok/harness_ant.git
 $env:HARNESS_HOME = "$PWD"  # or path to harness_ant clone
-$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills\antigravity"
 
 $agSkills = Join-Path $env:USERPROFILE ".gemini\antigravity\skills"
 Copy-Item -Recurse -Force "$env:HARNESS_HOME\skills\harness" "$agSkills\harness"
@@ -82,7 +82,7 @@ skills:
 
 ## install-skills.ps1 동작
 
-1. `HARNESS_SKILL_CATALOG`(기본: `E:\workspace\skills_안티그래비티\antigravity`)에서 스킬 폴더 확인
+1. `HARNESS_SKILL_CATALOG`(기본: `E:\workspace\skills\antigravity`)에서 스킬 폴더 확인
 2. lock에 있는 ID만 선택
 3. 프로젝트 `.agent/skills/{name}`에 **Junction**(기본) 또는 Copy
 
