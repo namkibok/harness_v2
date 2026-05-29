@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0-cursor] — 2026-05-27
+
+### Added
+
+- `scripts/install-skills.ps1` — sparse fetch from cursor-skills using `skills.lock.yaml`
+- `.harness/skills.lock.yaml.example` — project lock template
+- `docs/TEAM-WORKFLOW.md` — harness designer vs developer onboarding
+
+### Changed
+
+- README: submodule optional; developers use lock + install-skills only
+- Harness Phase 4: generate `.harness/skills.lock.yaml` and run install-skills
+
 ## [1.2.0-cursor] — 2026-05-27
 
 ### Changed

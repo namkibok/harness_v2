@@ -17,38 +17,45 @@
 
 ## 설치 (팀 · Git)
 
-### GitHub에서 clone (권장)
+역할별 상세: **[docs/TEAM-WORKFLOW.md](docs/TEAM-WORKFLOW.md)**
 
-메타 스킬 + **스킬 카탈로그 서브모듈**(`skills/catalog` → [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills))을 함께 받습니다.
+| 역할 | 필요한 것 |
+|------|----------|
+| **일반 개발자** | 프로젝트 repo + `.harness/skills.lock.yaml` → `install-skills.ps1` (카탈로그 전체 clone **불필요**) |
+| **하네스 설계자** | harness_v2 + `~/.cursor/skills/harness` |
+
+### 일반 개발자 — 필요한 스킬만 설치
+
+프로젝트에 `.harness/skills.lock.yaml`이 있으면:
 
 ```powershell
-git clone --recurse-submodules https://github.com/namkibok/harness_v2.git
+git clone https://github.com/your-org/your-project.git
+cd your-project
+
+git clone https://github.com/namkibok/harness_v2.git $env:TEMP\harness_v2
+& "$env:TEMP\harness_v2\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
+```
+
+`install-skills.ps1`은 [cursor-skills](https://github.com/namkibok/cursor-skills)에서 **lock에 적힌 스킬만** sparse checkout 후 `.cursor/skills/`에 Junction 합니다.  
+팀이 `.cursor/skills/`를 repo에 커밋해 두었다면 위 스크립트는 생략 가능합니다.
+
+### 하네스 설계자 — 메타 스킬 설치
+
+```powershell
+git clone https://github.com/namkibok/harness_v2.git
 cd harness_v2
-
-# 이미 clone한 경우 서브모듈만 받기
-# git submodule update --init --recursive
-
 Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
-$env:HARNESS_SKILL_CATALOG = "$PWD\skills\catalog"
 ```
 
-설치 후 Cursor를 재시작하거나 새 채팅을 열면 `harness` 스킬이 후보에 포함됩니다.
-
-> 카탈로그 전체를 `~/.cursor/skills/`에 복사하지 마세요. Harness Phase 4가 프로젝트마다 3~8개만 골라 `.cursor/skills/`에 링크합니다.
-
-### 저장소를 이미 클론한 경우
+카탈로그 submodule(`--recurse-submodules`)은 **선택**입니다. 설계 중 특정 스킬만 받을 때:
 
 ```powershell
-Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
-$env:HARNESS_SKILL_CATALOG = "$(Get-Location)\skills\catalog"
+.\scripts\install-skills.ps1 -Skills typescript-expert,webapp-testing -TargetDir .cursor\skills
 ```
 
-### 프로젝트에만 두기
+하네스 구성 완료 후 대상 프로젝트에 `.harness/skills.lock.yaml`을 만들고 팀 repo에 커밋하세요. 예시: [.harness/skills.lock.yaml.example](.harness/skills.lock.yaml.example)
 
-```powershell
-New-Item -ItemType Directory -Force -Path ".cursor\skills"
-Copy-Item -Recurse -Force "skills\harness" ".cursor\skills\harness"
-```
+> **금지:** 카탈로그 전체(~1,300개)를 `~/.cursor/skills/`에 복사하지 마세요.
 
 ## 사용법
 
@@ -79,14 +86,13 @@ your-project/
 harness_v2/
 ├── skills/
 │   ├── harness/                  # 메타 스킬 (6 Phase)
-│   │   └── references/
-│   │       ├── skill-catalog.md  # 카탈로그 연동 규칙
-│   │       └── ...
-│   └── catalog/                  # submodule → github.com/namkibok/cursor-skills
-├── skills/catalog-index.yaml     # 도메인별 추천 스킬 ID
+│   └── catalog/                  # submodule (선택)
+├── skills/catalog-index.yaml
+├── scripts/install-skills.ps1    # lock → sparse fetch
+├── .harness/skills.lock.yaml.example
 └── docs/
-    ├── quickstart-cursor.md
-    └── SPLIT-CATALOG-SUBMODULE.md  # 선택: 별도 repo + submodule 분리
+    ├── TEAM-WORKFLOW.md
+    └── quickstart-cursor.md
 ```
 
 카탈로그 소스: [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills). 서브모듈 업데이트: `git submodule update --remote skills/catalog`.
@@ -97,6 +103,7 @@ harness_v2/
 
 ## 문서
 
+- [팀 워크플로 (설계자 / 개발자)](docs/TEAM-WORKFLOW.md)
 - [Cursor 빠른 시작](docs/quickstart-cursor.md)
 - [런타임 매핑 상세](skills/harness/references/cursor-runtime-mapping.md)
 

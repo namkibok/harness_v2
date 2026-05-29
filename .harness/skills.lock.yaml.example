@@ -1,0 +1,14 @@
+# Copy to your project as .harness/skills.lock.yaml after Harness Phase 4.
+# Then run: ..\harness_v2\scripts\install-skills.ps1 -LockFile .harness\skills.lock.yaml
+#
+# Commit this file + .cursor/skills/ (or lock only + run script in CI/onboarding).
+
+domain: fullstack-web
+updated: 2026-05-27
+
+skills:
+  - typescript-expert
+  - webapp-testing
+  - vercel-deployment
+  - ui-ux-designer
+  - api-security-best-practices
