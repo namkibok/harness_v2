@@ -26,7 +26,7 @@
 | background-researcher | generalPurpose | 배경/경쟁/학술 | research_background.md |
 | (리더 = 오케스트레이터) | — | 통합 보고서 | 종합보고서.md |
 
-> 리서치 에이전트는 `generalPurpose` 빌트인 타입을 사용하되, 반드시 `.cursor/agents/{name}.md` 파일로 정의한다. 파일에는 역할·조사 범위·팀 통신 프로토콜을 명시하여 재사용성과 협업 품질을 보장한다.
+> 리서치 에이전트는 `generalPurpose` 빌트인 타입을 사용하되, 반드시 `.agent/agents/{name}.md` 파일로 정의한다. 파일에는 역할·조사 범위·팀 통신 프로토콜을 명시하여 재사용성과 협업 품질을 보장한다.
 
 ### 오케스트레이터 워크플로우 (병렬 Task 팀)
 
@@ -314,13 +314,13 @@ test ────handoff 파일 또는 다음 Task prompt에 맥락 포함──
 ## 산출물 패턴 요약
 
 ### 에이전트 정의 파일
-위치: `프로젝트/.cursor/agents/{agent-name}.md`
+위치: `프로젝트/.agent/agents/{agent-name}.md`
 필수 섹션: 핵심 역할, 작업 원칙, 입력/출력 프로토콜, 에러 핸들링, 협업
 팀 모드 추가 섹션: **팀 통신 프로토콜** (메시지 수신/발신, 작업 요청 범위)
 
 ### 스킬 파일 구조
-위치: `프로젝트/.cursor/skills/{skill-name}/SKILL.md` (프로젝트 레벨)
-또는: `~/.cursor/skills/{skill-name}/SKILL.md` (글로벌 레벨)
+위치: `프로젝트/.agent/skills/{skill-name}/SKILL.md` (프로젝트 레벨)
+또는: `~/.agent/skills/{skill-name}/SKILL.md` (글로벌 레벨)
 
 ### 통합 스킬 (오케스트레이터)
 팀 전체를 조율하는 상위 스킬. 시나리오별 에이전트 구성과 워크플로우를 정의.

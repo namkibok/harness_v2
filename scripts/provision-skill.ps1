@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Resolve skill name(s) from natural language and install from cursor-skills catalog.
+  Resolve skill name(s) from natural language and install from the Antigravity skills catalog.
 
 .EXAMPLE
   .\scripts\provision-skill.ps1 -Query "hwpx 스킬 구성해줘"
@@ -11,25 +11,30 @@ param(
     [string]$Query = "",
     [string[]]$SkillIds = @(),
     [string]$ProjectRoot = ".",
-    [string]$TargetDir = ".cursor\skills",
+    [string]$TargetDir = ".agent\skills",
     [string]$LockFile = ".harness\skills.lock.yaml",
-    [string]$CatalogRepo = "namkibok/cursor-skills",
-    [string]$Branch = "main",
+    [string]$CatalogPath = "",
     [ValidateSet("Junction", "Copy")]
     [string]$Mode = "Junction"
 )
 
 $ErrorActionPreference = "Stop"
 
-function Get-HarnessV2Root {
-    if ($env:HARNESS_V2_HOME -and (Test-Path (Join-Path $env:HARNESS_V2_HOME "scripts\install-skills.ps1"))) {
-        return (Resolve-Path $env:HARNESS_V2_HOME).Path
+$DefaultCatalog = "E:\workspace\skills_안티그래비티\antigravity"
+if (-not $CatalogPath) {
+    if ($env:HARNESS_SKILL_CATALOG) { $CatalogPath = $env:HARNESS_SKILL_CATALOG }
+    else { $CatalogPath = $DefaultCatalog }
+}
+
+function Get-HarnessHome {
+    if ($env:HARNESS_HOME -and (Test-Path (Join-Path $env:HARNESS_HOME "scripts\install-skills.ps1"))) {
+        return (Resolve-Path $env:HARNESS_HOME).Path
     }
     $here = $PSScriptRoot
     if ($here -and (Test-Path (Join-Path $here "install-skills.ps1"))) {
         return (Resolve-Path (Join-Path $here "..")).Path
     }
-    throw "HARNESS_V2_HOME is not set and provision-skill.ps1 is not inside harness_v2/scripts. Clone https://github.com/namkibok/harness_v2 and set `$env:HARNESS_V2_HOME."
+    throw "HARNESS_HOME is not set and provision-skill.ps1 is not inside the harness repo/scripts. Set `$env:HARNESS_HOME to the harness repo root."
 }
 
 function Get-AliasMap {
@@ -69,20 +74,14 @@ function Get-CandidateIdsFromQuery {
     $clean = [regex]::Replace($normalized, $stop, ' ')
     $tokens = $clean -split '[^\w-]+' | Where-Object { $_ -match '^[a-z][a-z0-9-]*$' -and $_.Length -ge 2 }
 
-  return @($tokens | Select-Object -Unique)
+    return @($tokens | Select-Object -Unique)
 }
 
 function Test-CatalogSkillExists {
-    param([string]$SkillId, [string]$Repo, [string]$Ref)
+    param([string]$SkillId, [string]$CatalogRoot)
 
-    $uri = "https://api.github.com/repos/$Repo/contents/$SkillId/SKILL.md?ref=$Ref"
-    try {
-        $null = Invoke-RestMethod -Uri $uri -Headers @{ "User-Agent" = "harness-v2-provision" } -ErrorAction Stop
-        return $true
-    }
-    catch {
-        return $false
-    }
+    $skillMd = Join-Path $CatalogRoot "$SkillId\SKILL.md"
+    return Test-Path $skillMd
 }
 
 function Resolve-SkillIds {
@@ -90,8 +89,7 @@ function Resolve-SkillIds {
         [string]$Text,
         [string[]]$Explicit,
         [hashtable]$Aliases,
-        [string]$Repo,
-        [string]$Ref
+        [string]$CatalogRoot
     )
 
     $candidates = @()
@@ -106,7 +104,7 @@ function Resolve-SkillIds {
     $found = @()
     foreach ($id in $candidates) {
         $resolved = if ($Aliases.ContainsKey($id)) { $Aliases[$id] } else { $id }
-        if (Test-CatalogSkillExists -SkillId $resolved -Repo $Repo -Ref $Ref) {
+        if (Test-CatalogSkillExists -SkillId $resolved -CatalogRoot $CatalogRoot) {
             $found += $resolved
         }
     }
@@ -151,22 +149,26 @@ function Update-LockFile {
 }
 
 # --- main ---
-$harnessRoot = Get-HarnessV2Root
+if (-not (Test-Path $CatalogPath)) {
+    throw "Catalog path not found: $CatalogPath`nSet HARNESS_SKILL_CATALOG to E:\workspace\skills_안티그래비티\antigravity"
+}
+
+$harnessRoot = Get-HarnessHome
 $aliases = Get-AliasMap -HarnessRoot $harnessRoot
 Push-Location $ProjectRoot
 try {
-    $resolved = Resolve-SkillIds -Text $Query -Explicit $SkillIds -Aliases $aliases -Repo $CatalogRepo -Ref $Branch
+    $resolved = Resolve-SkillIds -Text $Query -Explicit $SkillIds -Aliases $aliases -CatalogRoot $CatalogPath
 
     if ($resolved.Count -eq 0) {
         $hint = if ($Query) { "Query: $Query" } else { "SkillIds: $($SkillIds -join ', ')" }
         throw @"
-No matching skills in catalog ($CatalogRepo).
+No matching skills in catalog ($CatalogPath).
 $hint
 
 Tips:
   - Use the catalog folder name (e.g. typescript-expert), not a display name.
-  - Add aliases in harness_v2/skills/catalog-index.yaml under 'aliases:'.
-  - If the skill is new, add it to cursor-skills first, or ask the agent to scaffold .cursor/skills/<name>/SKILL.md.
+  - Add aliases in skills/catalog-index.yaml under 'aliases:'.
+  - If the skill is new, add it under $CatalogPath\<name>\SKILL.md first.
 "@
     }
 
@@ -175,7 +177,7 @@ Tips:
 
     $installScript = Join-Path $harnessRoot "scripts\install-skills.ps1"
     $skillArg = ($resolved -join ',')
-    & $installScript -Skills $skillArg -TargetDir $TargetDir -LockFile $LockFile -Mode $Mode
+    & $installScript -Skills $skillArg -TargetDir $TargetDir -LockFile $LockFile -Mode $Mode -CatalogPath $CatalogPath
 
     Write-Host ""
     Write-Host "Installed to: $(Resolve-Path $TargetDir -ErrorAction SilentlyContinue)"

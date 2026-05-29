@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0-antigravity] — 2026-05-29
+
+### Changed
+
+- **Google Antigravity** 런타임 포트: `.cursor/*` → `.agent/*`, 전역 `~/.gemini/antigravity/skills/`
+- 스킬 카탈로그: GitHub `cursor-skills` → 로컬 `E:\workspace\skills_안티그래비티\antigravity`
+- `HARNESS_V2_HOME` → `HARNESS_HOME`, `install-skills.ps1` / `provision-skill.ps1` 로컬 카탈로그 Junction
+- `cursor-runtime-mapping.md` → `antigravity-runtime-mapping.md`
+- `docs/quickstart-cursor.md` → `docs/quickstart-antigravity.md`
+- `.gitmodules` (cursor-skills submodule) 제거 — 외부 카탈로그 경로 사용
+
 ## [1.4.0-cursor] — 2026-05-27
 
 ### Added

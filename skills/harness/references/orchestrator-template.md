@@ -60,7 +60,7 @@ description: "{도메인} 병렬 Task 팀을 조율하는 오케스트레이터.
    ```
    Task(
      description: "{teammate-1} {작업 요약}",
-     prompt: "Read .cursor/agents/{teammate-1}.md 와 .cursor/skills/{skill}/SKILL.md.
+     prompt: "Read .agent/agents/{teammate-1}.md 와 .agent/skills/{skill}/SKILL.md.
               입력: _workspace/00_brief.md
               출력: _workspace/02_{teammate-1}_{artifact}.md
               {역할별 상세 지시}",

@@ -1,19 +1,22 @@
-# Harness for Cursor
+# Harness for Google Antigravity
 
-[revfactory/harness](https://github.com/revfactory/harness)의 **Cursor AI** 포트입니다. 도메인 한 줄 → 전문 에이전트 팀 + 스킬을 설계·생성하는 **L3 메타 팩토리(팀 아키텍처)** 역할은 동일하고, 런타임만 Cursor에 맞게 바뀌었습니다.
+[revfactory/harness](https://github.com/revfactory/harness)의 **Google Antigravity** 포트입니다. 도메인 한 줄 → 전문 에이전트 팀 + 스킬을 설계·생성하는 **L3 메타 팩토리(팀 아키텍처)** 역할은 동일하고, 런타임만 Antigravity에 맞게 바뀌었습니다.
 
-**English summary:** Same Harness meta-skill; outputs go to `.cursor/agents/` and `.cursor/skills/`; orchestration uses Cursor `Task` subagents instead of Claude Code `TeamCreate` / `SendMessage`.
+**English summary:** Same Harness meta-skill; outputs go to `.agent/agents/` and `.agent/skills/`; orchestration uses parallel delegation + `_workspace/` handoffs; skill catalog lives at `E:\workspace\skills_안티그래비티\antigravity`.
 
-## Claude Code vs Cursor
+**Repository:** [github.com/namkibok/harness_ant](https://github.com/namkibok/harness_ant)
 
-| 항목 | Claude Code (원본) | Cursor (이 포트) |
-|------|-------------------|------------------|
-| 에이전트 정의 | `.claude/agents/` | `.cursor/agents/` |
-| 스킬 | `.claude/skills/` | `.cursor/skills/` |
-| 세션 포인터 | `CLAUDE.md` | `AGENTS.md` 또는 `.cursor/rules/harness.mdc` |
-| 멀티 에이전트 | `TeamCreate`, `SendMessage` | 병렬 `Task` + `_workspace/` |
-| 설치 | `/plugin install harness@harness` | `skills/harness` → `~/.cursor/skills/harness` |
-| 실험 플래그 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | **불필요** |
+## Claude Code vs Cursor vs Antigravity
+
+| 항목 | Claude Code (원본) | Cursor (이전 포트) | Antigravity (이 포트) |
+|------|-------------------|-------------------|------------------------|
+| 에이전트 정의 | `.claude/agents/` | `.cursor/agents/` | `.agent/agents/` |
+| 스킬 | `.claude/skills/` | `.cursor/skills/` | `.agent/skills/` (워크스페이스) |
+| 전역 스킬 | — | `~/.cursor/skills/` | `~/.gemini/antigravity/skills/` |
+| 세션 포인터 | `CLAUDE.md` | `AGENTS.md` | **`AGENTS.md`** |
+| 멀티 에이전트 | `TeamCreate`, `SendMessage` | 병렬 `Task` + `_workspace/` | 병렬 위임 + `_workspace/` |
+| 스킬 카탈로그 | — | cursor-skills (GitHub) | **`E:\workspace\skills_안티그래비티\antigravity`** |
+| 메타 스킬 설치 | `/plugin install` | `~/.cursor/skills/harness` | `~/.gemini/antigravity/skills/harness` |
 
 ## 설치 (팀 · Git)
 
@@ -21,8 +24,18 @@
 
 | 역할 | 필요한 것 |
 |------|----------|
-| **일반 개발자** | 프로젝트 repo + `.harness/skills.lock.yaml` → `install-skills.ps1` (카탈로그 전체 clone **불필요**) |
-| **하네스 설계자** | harness_v2 + `~/.cursor/skills/harness` |
+| **일반 개발자** | 프로젝트 repo + `.harness/skills.lock.yaml` → `install-skills.ps1` (카탈로그 전체 복사 **불필요**) |
+| **하네스 설계자** | 하네스 repo + `~/.gemini/antigravity/skills/harness` |
+
+### 환경 변수 (권장)
+
+```powershell
+git clone https://github.com/namkibok/harness_ant.git
+cd harness_ant
+
+$env:HARNESS_HOME = (Get-Location).Path
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
+```
 
 ### 일반 개발자 — 필요한 스킬만 설치
 
@@ -32,49 +45,48 @@
 git clone https://github.com/your-org/your-project.git
 cd your-project
 
-git clone https://github.com/namkibok/harness_v2.git $env:TEMP\harness_v2
-& "$env:TEMP\harness_v2\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
+& "$env:HARNESS_HOME\scripts\install-skills.ps1" -LockFile .harness\skills.lock.yaml
 ```
 
-`install-skills.ps1`은 [cursor-skills](https://github.com/namkibok/cursor-skills)에서 **lock에 적힌 스킬만** sparse checkout 후 `.cursor/skills/`에 Junction 합니다.  
-팀이 `.cursor/skills/`를 repo에 커밋해 두었다면 위 스크립트는 생략 가능합니다.
+`install-skills.ps1`은 **로컬 카탈로그**에서 lock에 적힌 스킬만 `.agent/skills/`에 Junction 합니다.  
+팀이 `.agent/skills/`를 repo에 커밋해 두었다면 위 스크립트는 생략 가능합니다.
 
 ### 하네스 설계자 — 메타 스킬 설치
 
 ```powershell
-git clone https://github.com/namkibok/harness_v2.git C:\dev\harness_v2
-$env:HARNESS_V2_HOME = "C:\dev\harness_v2"
-Copy-Item -Recurse -Force "$env:HARNESS_V2_HOME\skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
-Copy-Item -Recurse -Force "$env:HARNESS_V2_HOME\skills\provision-skill" "$env:USERPROFILE\.cursor\skills\provision-skill"
+$agSkills = Join-Path $env:USERPROFILE ".gemini\antigravity\skills"
+New-Item -ItemType Directory -Force -Path $agSkills | Out-Null
+Copy-Item -Recurse -Force "$env:HARNESS_HOME\skills\harness" "$agSkills\harness"
+Copy-Item -Recurse -Force "$env:HARNESS_HOME\skills\provision-skill" "$agSkills\provision-skill"
 ```
 
 ### 말만 하면 스킬 설치 (`provision-skill`)
 
-프로젝트 폴더를 Cursor로 연 뒤 채팅:
+Antigravity에서 프로젝트 폴더를 연 뒤 채팅:
 
 ```
 hwpx 스킬 구성해줘
 ```
 
-Agent가 `provision-skill` 스킬을 따라 `provision-skill.ps1`을 실행합니다 (카탈로그에 해당 ID가 있을 때 자동 sparse install).
+Agent가 `provision-skill` 스킬을 따라 `provision-skill.ps1`을 실행합니다 (카탈로그에 해당 ID가 있을 때 자동 설치).
 
 ```powershell
-& "$env:HARNESS_V2_HOME\scripts\provision-skill.ps1" -Query "hwpx 스킬 구성해줘"
+& "$env:HARNESS_HOME\scripts\provision-skill.ps1" -Query "hwpx 스킬 구성해줘"
 ```
 
-카탈로그 submodule(`--recurse-submodules`)은 **선택**입니다. 설계 중 특정 스킬만 받을 때:
+설계 중 특정 스킬만 받을 때:
 
 ```powershell
-.\scripts\install-skills.ps1 -Skills typescript-expert,webapp-testing -TargetDir .cursor\skills
+.\scripts\install-skills.ps1 -Skills typescript-expert,webapp-testing -TargetDir .agent\skills
 ```
 
 하네스 구성 완료 후 대상 프로젝트에 `.harness/skills.lock.yaml`을 만들고 팀 repo에 커밋하세요. 예시: [.harness/skills.lock.yaml.example](.harness/skills.lock.yaml.example)
 
-> **금지:** 카탈로그 전체(~1,300개)를 `~/.cursor/skills/`에 복사하지 마세요.
+> **금지:** 카탈로그 전체(~1,300개)를 `~/.gemini/antigravity/skills/`에 복사하지 마세요.
 
 ## 사용법
 
-Cursor 채팅에서 예:
+Antigravity 채팅에서 예:
 
 ```
 하네스 구성해줘. 이 프로젝트는 API 문서 자동화야.
@@ -88,9 +100,9 @@ Build a harness for deep research with parallel investigators.
 
 ```
 your-project/
-├── .cursor/
-│   ├── agents/          # 서브에이전트 정의
-│   └── skills/          # 도메인 스킬
+├── .agent/
+│   ├── agents/          # 에이전트 정의
+│   └── skills/          # lock 기준 설치된 스킬
 ├── AGENTS.md            # 하네스 트리거 포인터 (간단히)
 └── _workspace/          # 실행 시 중간 산출물 (런타임)
 ```
@@ -98,19 +110,21 @@ your-project/
 ## 구조
 
 ```
-harness_v2/
+하네스_안티그래비티/
 ├── skills/
 │   ├── harness/                  # 메타 스킬 (6 Phase)
-│   └── catalog/                  # submodule (선택)
+│   └── provision-skill/
 ├── skills/catalog-index.yaml
-├── scripts/install-skills.ps1    # lock → sparse fetch
+├── scripts/
+│   ├── install-skills.ps1        # lock → 로컬 카탈로그에서 Junction
+│   └── provision-skill.ps1
 ├── .harness/skills.lock.yaml.example
 └── docs/
     ├── TEAM-WORKFLOW.md
-    └── quickstart-cursor.md
+    └── quickstart-antigravity.md
 ```
 
-카탈로그 소스: [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills). 서브모듈 업데이트: `git submodule update --remote skills/catalog`.
+**스킬 카탈로그 (외부):** `E:\workspace\skills_안티그래비티\antigravity` — `HARNESS_SKILL_CATALOG`로 재정의 가능.
 
 ## 아키텍처 패턴 (동일)
 
@@ -119,8 +133,8 @@ harness_v2/
 ## 문서
 
 - [팀 워크플로 (설계자 / 개발자)](docs/TEAM-WORKFLOW.md)
-- [Cursor 빠른 시작](docs/quickstart-cursor.md)
-- [런타임 매핑 상세](skills/harness/references/cursor-runtime-mapping.md)
+- [Antigravity 빠른 시작](docs/quickstart-antigravity.md)
+- [런타임 매핑 상세](skills/harness/references/antigravity-runtime-mapping.md)
 
 ## 라이선스
 
@@ -129,4 +143,4 @@ Apache 2.0 — 원본 [revfactory/harness](https://github.com/revfactory/harness
 ## 크레딧
 
 팀 아키텍처·워크플로우: **RevFactory / Min Hwang** — [revfactory/harness](https://github.com/revfactory/harness)  
-Cursor 포트: [namkibok/harness_v2](https://github.com/namkibok/harness_v2)
+Antigravity 포트: [namkibok/harness_ant](https://github.com/namkibok/harness_ant) · Cursor 포트: [namkibok/harness_v2](https://github.com/namkibok/harness_v2)

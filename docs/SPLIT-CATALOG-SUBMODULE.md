@@ -1,43 +1,38 @@
-# cursor-skills submodule
+# Antigravity 스킬 카탈로그 (외부 경로)
 
-[harness_v2](https://github.com/namkibok/harness_v2)는 스킬 카탈로그를 **Git submodule**로 참조합니다.
+이 포트에서는 **Git submodule 대신 로컬 카탈로그**를 사용합니다.
 
-| Repo | Role |
+## 카탈로그 위치
+
+| 경로 | 내용 |
 |------|------|
-| [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills) | ~1,300 shared skills (`skills/catalog/`) |
-| [namkibok/harness_v2](https://github.com/namkibok/harness_v2) | Harness meta-skill + `catalog-index.yaml` |
+| `E:\workspace\skills_안티그래비티\antigravity` | ~1,300 Antigravity 스킬 (`{id}/SKILL.md`) |
 
-## Clone
-
-```powershell
-git clone --recurse-submodules https://github.com/namkibok/harness_v2.git
-```
-
-## Existing clone — init submodule
+환경 변수:
 
 ```powershell
-git submodule update --init --recursive
+$env:HARNESS_SKILL_CATALOG = "E:\workspace\skills_안티그래비티\antigravity"
 ```
 
-## Update catalog to latest
+## 하네스 repo와의 관계
 
-```powershell
-git submodule update --remote skills/catalog
-git add skills/catalog
-git commit -m "chore: bump cursor-skills submodule"
-```
+- **하네스 repo** (`하네스_안티그래비티`): 메타 스킬, 스크립트, `catalog-index.yaml`(추천 ID만)
+- **카탈로그 repo** (`skills_안티그래비티`): 실제 스킬 본문 — Phase 4에서 Read·선별
 
-## Standalone catalog repo
+`install-skills.ps1` / `provision-skill.ps1`은 카탈로그에서 lock에 있는 ID만 프로젝트 `.agent/skills/`로 Junction/Copy 합니다.
 
-카탈로그만 clone:
+## 스킬 추가·수정
 
-```powershell
-git clone https://github.com/namkibok/cursor-skills.git
-$env:HARNESS_SKILL_CATALOG = "$PWD\cursor-skills"
-```
+1. `E:\workspace\skills_안티그래비티\antigravity\{skill-id}\` 아래에 `SKILL.md` 추가 또는 수정
+2. 필요 시 `catalog-index.yaml`의 `aliases:` 또는 도메인 목록 갱신
+3. 대상 프로젝트에서 `provision-skill.ps1` 또는 `install-skills.ps1` 재실행
 
-## Contribute skills
+## 이전 Cursor 포트와의 차이
 
-1. Change files under `cursor-skills` repo (or `harness_v2/skills/catalog` after submodule init)
-2. Commit & push to [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills)
-3. In harness_v2: bump submodule pointer if needed
+| Cursor 포트 | Antigravity 포트 |
+|-------------|------------------|
+| `skills/catalog` submodule → cursor-skills | 외부 `skills_안티그래비티\antigravity` |
+| GitHub sparse clone | 로컬 폴더 Junction |
+| `.cursor/skills/` | `.agent/skills/` |
+
+`skills/catalog/` 서브모듈은 **더 이상 사용하지 않습니다.** submodule이 남아 있다면 제거해도 됩니다.

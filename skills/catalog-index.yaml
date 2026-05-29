@@ -1,5 +1,6 @@
-# Harness — 도메인별 추천 스킬 (카탈로그 ID = skills/catalog/{id}/)
-# 전체 목록이 아님. Phase 4에서 우선 검토 후 catalog에서 Glob으로 보완.
+# Harness — 도메인별 추천 스킬 (카탈로그 ID = HARNESS_SKILL_CATALOG/{id}/)
+# 기본 카탈로그: E:\workspace\skills_안티그래비티\antigravity
+# 전체 목록이 아님. Phase 4에서 우선 검토 후 카탈로그 Glob으로 보완.
 
 # provision-skill.ps1: 자연어 → 카탈로그 ID (키워드 소문자 매칭)
 aliases:
