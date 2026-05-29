@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0-cursor] — 2026-05-27
+
+### Added
+
+- `skills/provision-skill/` — natural-language skill install (triggers on "hwpx 스킬 구성" etc.)
+- `scripts/provision-skill.ps1` — resolve IDs via GitHub API + aliases, update lock, call install-skills
+- `catalog-index.yaml` `aliases:` section for keyword → skill ID mapping
+
 ## [1.3.0-cursor] — 2026-05-27
 
 ### Added

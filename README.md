@@ -42,9 +42,24 @@ git clone https://github.com/namkibok/harness_v2.git $env:TEMP\harness_v2
 ### 하네스 설계자 — 메타 스킬 설치
 
 ```powershell
-git clone https://github.com/namkibok/harness_v2.git
-cd harness_v2
-Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+git clone https://github.com/namkibok/harness_v2.git C:\dev\harness_v2
+$env:HARNESS_V2_HOME = "C:\dev\harness_v2"
+Copy-Item -Recurse -Force "$env:HARNESS_V2_HOME\skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+Copy-Item -Recurse -Force "$env:HARNESS_V2_HOME\skills\provision-skill" "$env:USERPROFILE\.cursor\skills\provision-skill"
+```
+
+### 말만 하면 스킬 설치 (`provision-skill`)
+
+프로젝트 폴더를 Cursor로 연 뒤 채팅:
+
+```
+hwpx 스킬 구성해줘
+```
+
+Agent가 `provision-skill` 스킬을 따라 `provision-skill.ps1`을 실행합니다 (카탈로그에 해당 ID가 있을 때 자동 sparse install).
+
+```powershell
+& "$env:HARNESS_V2_HOME\scripts\provision-skill.ps1" -Query "hwpx 스킬 구성해줘"
 ```
 
 카탈로그 submodule(`--recurse-submodules`)은 **선택**입니다. 설계 중 특정 스킬만 받을 때:

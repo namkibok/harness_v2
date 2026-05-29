@@ -1,6 +1,6 @@
 ---
 name: harness
-description: "Cursor용 하네스(팀 아키텍처) 메타 스킬. .cursor/agents·.cursor/skills·오케스트레이터 스킬을 생성. '하네스 구성해줘', '하네스 구축', 'Build a harness', '하네스 점검/감사/동기화', 도메인별 에이전트 팀 설계 요청 시 반드시 사용."
+description: "Cursor용 하네스(팀 아키텍처) 메타 스킬. .cursor/agents·.cursor/skills·오케스트레이터 스킬을 생성. '하네스 구성해줘', '하네스 구축', 'Build a harness', '하네스 점검/감사/동기화', 도메인별 에이전트 팀 설계 요청 시 반드시 사용. 단일 스킬만 설치('hwpx 스킬 구성', '스킬 설치')는 provision-skill 스킬 사용."
 ---
 
 # Harness — Agent Team & Skill Architect (Cursor)

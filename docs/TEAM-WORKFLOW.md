@@ -11,6 +11,16 @@
 | **카탈로그** | sparse fetch 또는 설계 시에만 | **불필요** (lock + install-skills) |
 | **전역** | `~/.cursor/skills/harness` | 동일 (메타 스킬 1개) |
 
+## 말만 하면 스킬 설치 (provision-skill)
+
+전역에 `provision-skill` 설치 후, 프로젝트에서:
+
+```
+typescript-expert 스킬 구성해줘
+```
+
+Agent → `provision-skill.ps1 -Query "..."` → cursor-skills에서 해당 ID만 설치.
+
 ## 일반 개발자 (권장)
 
 프로젝트에 `.harness/skills.lock.yaml`과 `.cursor/skills/`(또는 lock만)가 있습니다.
