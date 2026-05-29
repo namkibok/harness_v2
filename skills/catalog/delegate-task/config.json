@@ -1,0 +1,16 @@
+{
+  "name": "delegate-task",
+  "description": "복잡한 작업을 하위 작업으로 분해하고 에이전트에게 할당합니다.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "task_description": {
+        "type": "string",
+        "description": "분해할 작업의 상세 내용"
+      }
+    },
+    "required": [
+      "task_description"
+    ]
+  }
+}

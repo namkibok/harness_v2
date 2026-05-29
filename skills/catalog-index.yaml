@@ -1,0 +1,33 @@
+# Harness — 도메인별 추천 스킬 (카탈로그 ID = skills/catalog/{id}/)
+# 전체 목록이 아님. Phase 4에서 우선 검토 후 catalog에서 Glob으로 보완.
+
+fullstack-web:
+  - typescript-expert
+  - vercel-deployment
+  - webapp-testing
+  - ui-ux-designer
+  - api-security-best-practices
+
+code-review:
+  - vibers-code-review
+  - vulnerability-scanner
+  - verification-before-completion
+
+deep-research:
+  - wiki-researcher
+  - web-scraper
+  - writing-plans
+
+data-ai:
+  - vector-database-engineer
+  - data-scientist
+
+devops:
+  - workflow-orchestration-patterns
+  - vercel-automation
+  - shell
+
+documentation:
+  - wiki-page-writer
+  - tutorial-engineer
+  - writing-skills

@@ -15,21 +15,32 @@
 | 설치 | `/plugin install harness@harness` | `skills/harness` → `~/.cursor/skills/harness` |
 | 실험 플래그 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | **불필요** |
 
-## 설치
+## 설치 (팀 · Git)
 
-### GitHub에서 설치 (권장)
+### GitHub에서 clone (권장)
+
+메타 스킬 + **공유 스킬 카탈로그**(`skills/catalog`, 약 1,300개)가 함께 옵니다.
 
 ```powershell
 git clone https://github.com/namkibok/harness_v2.git
-Copy-Item -Recurse -Force "harness_v2\skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+cd harness_v2
+
+# 메타 스킬만 전역에 설치
+Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+
+# Harness가 카탈로그를 찾도록 경로 설정 (PowerShell 프로필에 넣어도 됨)
+$env:HARNESS_SKILL_CATALOG = "$PWD\skills\catalog"
 ```
 
 설치 후 Cursor를 재시작하거나 새 채팅을 열면 `harness` 스킬이 후보에 포함됩니다.
 
-### 저장소를 이미 클론한 경우 (전역 스킬)
+> 카탈로그 전체를 `~/.cursor/skills/`에 복사하지 마세요. Harness Phase 4가 프로젝트마다 3~8개만 골라 `.cursor/skills/`에 링크합니다.
+
+### 저장소를 이미 클론한 경우
 
 ```powershell
 Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+$env:HARNESS_SKILL_CATALOG = "$(Get-Location)\skills\catalog"
 ```
 
 ### 프로젝트에만 두기
@@ -65,17 +76,20 @@ your-project/
 ## 구조
 
 ```
-skills/harness/
-├── SKILL.md                      # 메타 스킬 (6 Phase)
-└── references/
-    ├── agent-design-patterns.md
-    ├── orchestrator-template.md
-    ├── team-examples.md
-    ├── skill-writing-guide.md
-    ├── skill-testing-guide.md
-    ├── qa-agent-guide.md
-    └── cursor-runtime-mapping.md   # Cursor 전용
+harness_v2/
+├── skills/
+│   ├── harness/                  # 메타 스킬 (6 Phase)
+│   │   └── references/
+│   │       ├── skill-catalog.md  # 카탈로그 연동 규칙
+│   │       └── ...
+│   └── catalog/                  # 공유 부품 창고 (~1,300 skills, Git 포함)
+├── skills/catalog-index.yaml     # 도메인별 추천 스킬 ID
+└── docs/
+    ├── quickstart-cursor.md
+    └── SPLIT-CATALOG-SUBMODULE.md  # 선택: 별도 repo + submodule 분리
 ```
+
+카탈로그만 `namkibok/cursor-skills`로 쪼개려면 [docs/SPLIT-CATALOG-SUBMODULE.md](docs/SPLIT-CATALOG-SUBMODULE.md)를 참고하세요.
 
 ## 아키텍처 패턴 (동일)
 
