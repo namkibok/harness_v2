@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0-cursor] — 2026-05-27
+
+### Changed
+
+- `skills/catalog` → Git submodule [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills)
+- Team clone: `git clone --recurse-submodules`
+
 ## [1.1.0-cursor] — 2026-05-27
 
 ### Added

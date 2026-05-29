@@ -5,7 +5,7 @@
 ## 1. 설치
 
 ```powershell
-git clone https://github.com/namkibok/harness_v2.git
+git clone --recurse-submodules https://github.com/namkibok/harness_v2.git
 cd harness_v2
 Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
 $env:HARNESS_SKILL_CATALOG = "$PWD\skills\catalog"

@@ -5,7 +5,7 @@ Harness는 스킬을 항상 처음부터 쓰지 않는다. **공유 카탈로그
 ## 카탈로그 경로 해석 (우선순위)
 
 1. 환경 변수 `HARNESS_SKILL_CATALOG` (절대 경로)
-2. **harness_v2 저장소 루트**의 `skills/catalog/` (이 저장소 clone 시 기본)
+2. **harness_v2 저장소 루트**의 `skills/catalog/` (submodule → [cursor-skills](https://github.com/namkibok/cursor-skills))
 3. 대상 프로젝트의 `skills/catalog/` (서브모듈로 둔 경우)
 
 메타 스킬만 `~/.cursor/skills/harness`에 복사한 경우, 카탈로그는 없다. 반드시 harness_v2를 clone하거나 `HARNESS_SKILL_CATALOG`를 설정한다.

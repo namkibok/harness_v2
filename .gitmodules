@@ -1,0 +1,3 @@
+[submodule "skills/catalog"]
+	path = skills/catalog
+	url = https://github.com/namkibok/cursor-skills.git

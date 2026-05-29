@@ -19,16 +19,16 @@
 
 ### GitHub에서 clone (권장)
 
-메타 스킬 + **공유 스킬 카탈로그**(`skills/catalog`, 약 1,300개)가 함께 옵니다.
+메타 스킬 + **스킬 카탈로그 서브모듈**(`skills/catalog` → [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills))을 함께 받습니다.
 
 ```powershell
-git clone https://github.com/namkibok/harness_v2.git
+git clone --recurse-submodules https://github.com/namkibok/harness_v2.git
 cd harness_v2
 
-# 메타 스킬만 전역에 설치
-Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
+# 이미 clone한 경우 서브모듈만 받기
+# git submodule update --init --recursive
 
-# Harness가 카탈로그를 찾도록 경로 설정 (PowerShell 프로필에 넣어도 됨)
+Copy-Item -Recurse -Force "skills\harness" "$env:USERPROFILE\.cursor\skills\harness"
 $env:HARNESS_SKILL_CATALOG = "$PWD\skills\catalog"
 ```
 
@@ -82,14 +82,14 @@ harness_v2/
 │   │   └── references/
 │   │       ├── skill-catalog.md  # 카탈로그 연동 규칙
 │   │       └── ...
-│   └── catalog/                  # 공유 부품 창고 (~1,300 skills, Git 포함)
+│   └── catalog/                  # submodule → github.com/namkibok/cursor-skills
 ├── skills/catalog-index.yaml     # 도메인별 추천 스킬 ID
 └── docs/
     ├── quickstart-cursor.md
     └── SPLIT-CATALOG-SUBMODULE.md  # 선택: 별도 repo + submodule 분리
 ```
 
-카탈로그만 `namkibok/cursor-skills`로 쪼개려면 [docs/SPLIT-CATALOG-SUBMODULE.md](docs/SPLIT-CATALOG-SUBMODULE.md)를 참고하세요.
+카탈로그 소스: [namkibok/cursor-skills](https://github.com/namkibok/cursor-skills). 서브모듈 업데이트: `git submodule update --remote skills/catalog`.
 
 ## 아키텍처 패턴 (동일)
 
